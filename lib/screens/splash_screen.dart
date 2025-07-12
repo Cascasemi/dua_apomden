@@ -11,10 +11,24 @@ class SplashScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.flutter_dash,
-              size: 100,
-              color: Colors.white, 
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Icon(
+                  Icons.park,
+                  size: 100,
+                  color: Colors.green[300],
+                ),
+                Positioned(
+                  top: 15,
+                  right: 15,
+                  child: Icon(
+                    Icons.health_and_safety,
+                    size: 35,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 20),
             Text(
