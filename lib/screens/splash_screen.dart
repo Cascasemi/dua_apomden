@@ -6,7 +6,7 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.deepPurple,
+      backgroundColor: Color(0xFFF1F8E9), // Very Light Green background
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -17,7 +17,7 @@ class SplashScreen extends StatelessWidget {
                 Icon(
                   Icons.park,
                   size: 100,
-                  color: Colors.green[300],
+                  color: Color(0xFF2E7D32), // Forest Green - represents healthy crops
                 ),
                 Positioned(
                   top: 15,
@@ -25,7 +25,7 @@ class SplashScreen extends StatelessWidget {
                   child: Icon(
                     Icons.health_and_safety,
                     size: 35,
-                    color: Colors.white,
+                    color: Color(0xFF8BC34A), // Light Green for positive indicators
                   ),
                 ),
               ],
@@ -36,12 +36,12 @@ class SplashScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: Color(0xFF1B5E20), // Dark Green text
               ),
             ),
             SizedBox(height: 20),
             CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2E7D32)), // Forest Green
             ),
           ],
         ),
