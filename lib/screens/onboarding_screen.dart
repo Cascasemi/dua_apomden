@@ -63,9 +63,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     
     // Configure TTS
     await flutterTts.setLanguage("en-US");
-    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.setSpeechRate(0.3); // Slower speech rate (reduced from 0.5)
     await flutterTts.setVolume(0.8);
-    await flutterTts.setPitch(1.0);
+    await flutterTts.setPitch(0.7); // Lower pitch (reduced from 1.0)
     
     // Set TTS completion callback
     flutterTts.setCompletionHandler(() {
