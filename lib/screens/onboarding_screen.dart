@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'language_selection_screen.dart';
+import 'home_dashboard_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -116,8 +118,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _finishOnboarding() {
-    // TODO: Navigate to main app
-    print('Onboarding finished - Navigate to main app');
+    // Navigate to main dashboard
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeDashboardScreen()),
+    );
   }
 
   Future<void> _speakDescription(String description) async {
@@ -142,7 +147,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Future<void> _playTwiAudio() async {
     if (selectedLanguage == 'Twi') {
       try {
-        await audioPlayer.play(AssetSource('audio/outputtwi.mp3'));
+        await audioPlayer.play(AssetSource('audio/outputwi.mp3'));
       } catch (e) {
         print('Error playing Twi audio: $e');
       }
@@ -206,7 +211,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             size: 24,
           ),
           onPressed: () {
-            Navigator.pop(context);
+            // Stop any ongoing audio/TTS before navigating back
+            _stopAllAudio();
+            // Navigate back to language selection screen
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const LanguageSelectionScreen()),
+            );
           },
         ),
         actions: [

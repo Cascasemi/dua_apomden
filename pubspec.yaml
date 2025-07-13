@@ -67,7 +67,7 @@ flutter:
      - assets/images/farmerlady.jpg
      - assets/audio/language_instructions.mp3
      - assets/audio/eweexplain.mp3
-     - assets/audio/outputtwi.mp3
+     - assets/audio/outputwi.mp3
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
