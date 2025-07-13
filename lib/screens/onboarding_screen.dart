@@ -371,7 +371,7 @@ class WaterShapePainter extends CustomPainter {
     final width = size.width;
     final height = size.height;
 
-    // Create organic water-like shape
+    // Create main organic water-like shape
     path.moveTo(width * 0.2, height * 0.3);
     
     // Top left curve
@@ -412,7 +412,55 @@ class WaterShapePainter extends CustomPainter {
     
     path.close();
     
-    // Draw the main shape
+    // Add droplets to match the clipper
+    // Droplet 1 - Top right area
+    path.addOval(Rect.fromCircle(
+      center: Offset(width * 0.88, height * 0.15),
+      radius: width * 0.04,
+    ));
+
+    // Droplet 2 - Top left area
+    path.addOval(Rect.fromCircle(
+      center: Offset(width * 0.15, height * 0.08),
+      radius: width * 0.025,
+    ));
+
+    // Droplet 3 - Right side
+    path.addOval(Rect.fromCircle(
+      center: Offset(width * 0.92, height * 0.45),
+      radius: width * 0.03,
+    ));
+
+    // Droplet 5 - Left side
+    path.addOval(Rect.fromCircle(
+      center: Offset(width * 0.02, height * 0.55),
+      radius: width * 0.02,
+    ));
+
+    // Droplet 6 - Top center area
+    path.addOval(Rect.fromCenter(
+      center: Offset(width * 0.45, height * 0.03),
+      width: width * 0.06,
+      height: width * 0.03,
+    ));
+
+    // Small splash effects
+    path.addOval(Rect.fromCircle(
+      center: Offset(width * 0.83, height * 0.2),
+      radius: width * 0.015,
+    ));
+
+    path.addOval(Rect.fromCircle(
+      center: Offset(width * 0.18, height * 0.12),
+      radius: width * 0.012,
+    ));
+
+    path.addOval(Rect.fromCircle(
+      center: Offset(width * 0.88, height * 0.4),
+      radius: width * 0.01,
+    ));
+    
+    // Draw the main shape with droplets
     canvas.drawPath(path, paint);
     
     // Add subtle gradient effect
@@ -429,7 +477,7 @@ class WaterShapePainter extends CustomPainter {
     
     canvas.drawPath(path, gradientPaint);
     
-    // Add ripple effect circles
+    // Add ripple effect circles around the main body
     final ripplePaint = Paint()
       ..color = color.withOpacity(0.1)
       ..style = PaintingStyle.stroke
@@ -452,7 +500,7 @@ class WaterShapeClipper extends CustomClipper<Path> {
     final width = size.width;
     final height = size.height;
 
-    // Create the same organic water-like shape as the painter
+    // Create the main organic water-like shape
     path.moveTo(width * 0.2, height * 0.3);
     
     // Top left curve
@@ -492,6 +540,84 @@ class WaterShapeClipper extends CustomClipper<Path> {
     );
     
     path.close();
+
+    // Add droplet 1 - Top right area
+    final droplet1 = Path();
+    droplet1.addOval(Rect.fromCircle(
+      center: Offset(width * 0.88, height * 0.15),
+      radius: width * 0.04,
+    ));
+    path.addPath(droplet1, Offset.zero);
+
+    // Add droplet 2 - Top left area (smaller)
+    final droplet2 = Path();
+    droplet2.addOval(Rect.fromCircle(
+      center: Offset(width * 0.15, height * 0.08),
+      radius: width * 0.025,
+    ));
+    path.addPath(droplet2, Offset.zero);
+
+    // Add droplet 3 - Right side (medium)
+    final droplet3 = Path();
+    droplet3.addOval(Rect.fromCircle(
+      center: Offset(width * 0.92, height * 0.45),
+      radius: width * 0.03,
+    ));
+    path.addPath(droplet3, Offset.zero);
+
+    // Add droplet 4 - Bottom area (tear drop shape)
+    final droplet4 = Path();
+    droplet4.moveTo(width * 0.5, height * 0.95);
+    droplet4.quadraticBezierTo(
+      width * 0.48, height * 0.98,  // control point
+      width * 0.52, height * 0.98   // end point
+    );
+    droplet4.quadraticBezierTo(
+      width * 0.54, height * 0.96,  // control point
+      width * 0.5, height * 0.95    // back to start
+    );
+    droplet4.close();
+    path.addPath(droplet4, Offset.zero);
+
+    // Add droplet 5 - Left side (small)
+    final droplet5 = Path();
+    droplet5.addOval(Rect.fromCircle(
+      center: Offset(width * 0.02, height * 0.55),
+      radius: width * 0.02,
+    ));
+    path.addPath(droplet5, Offset.zero);
+
+    // Add droplet 6 - Top center area (elongated)
+    final droplet6 = Path();
+    droplet6.addOval(Rect.fromCenter(
+      center: Offset(width * 0.45, height * 0.03),
+      width: width * 0.06,
+      height: width * 0.03,
+    ));
+    path.addPath(droplet6, Offset.zero);
+
+    // Add connecting splash effects - small droplets between main shape and larger droplets
+    final splash1 = Path();
+    splash1.addOval(Rect.fromCircle(
+      center: Offset(width * 0.83, height * 0.2),
+      radius: width * 0.015,
+    ));
+    path.addPath(splash1, Offset.zero);
+
+    final splash2 = Path();
+    splash2.addOval(Rect.fromCircle(
+      center: Offset(width * 0.18, height * 0.12),
+      radius: width * 0.012,
+    ));
+    path.addPath(splash2, Offset.zero);
+
+    final splash3 = Path();
+    splash3.addOval(Rect.fromCircle(
+      center: Offset(width * 0.88, height * 0.4),
+      radius: width * 0.01,
+    ));
+    path.addPath(splash3, Offset.zero);
+
     return path;
   }
 
