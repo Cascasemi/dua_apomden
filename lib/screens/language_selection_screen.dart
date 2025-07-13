@@ -363,38 +363,6 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                     ],
                   ),
                 ),
-                // Continue Button (only show when language is selected)
-                if (selectedLanguage != null) ...[
-                  const SizedBox(height: 20),
-                  AnimatedOpacity(
-                    opacity: selectedLanguage != null ? 1.0 : 0.0,
-                    duration: const Duration(milliseconds: 500),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // TODO: Navigate to main app
-                          print('Continue with selected language');
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF2E7D32),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                        ),
-                        child: const Text(
-                          'Continue',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
                 const SizedBox(height: 20),
               ],
             ),
