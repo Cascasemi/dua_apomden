@@ -19,7 +19,41 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
   int healthyPercentage = 85;
   int diseasesFound = 2;
   int pendingTreatments = 1;
-  int currentTabIndex = 0; // Track current tab
+  int currentTabIndex = 0;
+
+  // Navigation to individual screens
+  void _navigateToScreen(int tabIndex) async {
+    Widget targetScreen;
+    
+    switch (tabIndex) {
+      case 1:
+        targetScreen = ScanScreen(selectedTabIndex: tabIndex);
+        break;
+      case 2:
+        targetScreen = HistoryScreen(selectedTabIndex: tabIndex);
+        break;
+      case 3:
+        targetScreen = LearnScreen(selectedTabIndex: tabIndex);
+        break;
+      case 4:
+        targetScreen = SettingsScreen(selectedTabIndex: tabIndex);
+        break;
+      default:
+        return; // Stay on home screen
+    }
+
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => targetScreen),
+    );
+
+    // Handle return value to update selected tab
+    if (result != null && result is int) {
+      setState(() {
+        currentTabIndex = result;
+      });
+    }
+  } // Track current tab
 
   @override
   void initState() {
@@ -266,20 +300,26 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
         Row(
           children: [
             Expanded(
-              child: _buildStatCard(
-                'Scans',
-                todayScans.toString(),
-                Icons.camera_alt,
-                Color(0xFF4CAF50),
+              child: GestureDetector(
+                onTap: () => _navigateToScreen(2), // Navigate to history
+                child: _buildStatCard(
+                  'Scans',
+                  todayScans.toString(),
+                  Icons.camera_alt,
+                  Color(0xFF4CAF50),
+                ),
               ),
             ),
             SizedBox(width: 12),
             Expanded(
-              child: _buildStatCard(
-                'Healthy',
-                '$healthyPercentage%',
-                Icons.check_circle,
-                Color(0xFF8BC34A),
+              child: GestureDetector(
+                onTap: () => _navigateToScreen(2), // Navigate to history
+                child: _buildStatCard(
+                  'Healthy',
+                  '$healthyPercentage%',
+                  Icons.check_circle,
+                  Color(0xFF8BC34A),
+                ),
               ),
             ),
           ],
@@ -288,20 +328,26 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
         Row(
           children: [
             Expanded(
-              child: _buildStatCard(
-                'Issues',
-                diseasesFound.toString(),
-                Icons.warning,
-                Color(0xFFFF8F00),
+              child: GestureDetector(
+                onTap: () => _navigateToScreen(2), // Navigate to history
+                child: _buildStatCard(
+                  'Issues',
+                  diseasesFound.toString(),
+                  Icons.warning,
+                  Color(0xFFFF8F00),
+                ),
               ),
             ),
             SizedBox(width: 12),
             Expanded(
-              child: _buildStatCard(
-                'Treatments',
-                pendingTreatments.toString(),
-                Icons.healing,
-                Color(0xFF689F38),
+              child: GestureDetector(
+                onTap: () => _navigateToScreen(3), // Navigate to learn screen
+                child: _buildStatCard(
+                  'Treatments',
+                  pendingTreatments.toString(),
+                  Icons.healing,
+                  Color(0xFF689F38),
+                ),
               ),
             ),
           ],
@@ -452,7 +498,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
         ),
       ),
       onTap: () {
-        // TODO: Navigate to scan details
+        _navigateToScreen(2); // Navigate to history for details
       },
     );
   }
@@ -514,8 +560,22 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
   Widget _buildActionButton(String label, IconData icon, Color color) {
     return GestureDetector(
       onTap: () {
-        // TODO: Handle action tap
-        print('$label tapped');
+        switch (label) {
+          case 'Scan':
+            _navigateToScreen(1);
+            break;
+          case 'Stats':
+            _navigateToScreen(2); // Navigate to history for stats
+            break;
+          case 'Guide':
+            _navigateToScreen(3); // Navigate to learn screen
+            break;
+          case 'Settings':
+            _navigateToScreen(4);
+            break;
+          default:
+            print('$label tapped');
+        }
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 16),
@@ -649,7 +709,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
         selectedFontSize: 12,
         unselectedFontSize: 12,
         elevation: 0,
-        currentIndex: 0, // Home is selected
+        currentIndex: currentTabIndex,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -673,8 +733,15 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
           ),
         ],
         onTap: (index) {
-          // TODO: Handle navigation
-          print('Bottom nav item $index tapped');
+          if (index == 0) {
+            // Stay on home screen
+            setState(() {
+              currentTabIndex = 0;
+            });
+          } else {
+            // Navigate to individual screen
+            _navigateToScreen(index);
+          }
         },
       ),
     );
