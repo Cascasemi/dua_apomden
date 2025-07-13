@@ -15,22 +15,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<OnboardingPageData> onboardingPages = [
     OnboardingPageData(
-      icon: Icons.camera_alt,
-      title: 'Capture Crop Images',
-      description: 'Take clear photos of your crops to detect diseases using our advanced AI technology.',
+      icon: Icons.agriculture,
+      title: 'Dua Apomden',
+      description: 'Protect your crops with AI-powered disease detection. Capture, analyze, and get instant treatment recommendations for healthier harvests.',
       color: Color(0xFF2E7D32),
+      isWelcomePage: true,
     ),
     OnboardingPageData(
       icon: Icons.search,
       title: 'AI-Powered Analysis',
       description: 'Our intelligent system analyzes your crop images and provides accurate disease detection results.',
       color: Color(0xFF4CAF50),
+      isWelcomePage: false,
     ),
     OnboardingPageData(
       icon: Icons.healing,
       title: 'Get Treatment Solutions',
       description: 'Receive personalized treatment recommendations and expert advice for your crop diseases.',
       color: Color(0xFF8BC34A),
+      isWelcomePage: false,
     ),
   ];
 
@@ -197,50 +200,142 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Widget _buildOnboardingPage(OnboardingPageData pageData) {
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Icon
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              color: pageData.color.withOpacity(0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              pageData.icon,
-              size: 60,
-              color: pageData.color,
-            ),
+    if (pageData.isWelcomePage) {
+      // Custom layout for welcome page with water-like shape
+      return Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              pageData.color.withOpacity(0.1),
+              pageData.color.withOpacity(0.05),
+            ],
           ),
-          const SizedBox(height: 40),
-          // Title
-          Text(
-            pageData.title,
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1B5E20),
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              flex: 3,
+              child: Stack(
+                children: [
+                  // Image with water-like shape clipping mask
+                  Center(
+                    child: ClipPath(
+                      clipper: WaterShapeClipper(),
+                      child: Container(
+                        width: 250,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: pageData.color.withOpacity(0.3),
+                              blurRadius: 20,
+                              spreadRadius: 5,
+                              offset: Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                        child: Image.asset(
+                          'assets/images/farmerlady.jpg',
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: pageData.color.withOpacity(0.2),
+                              child: Icon(
+                                pageData.icon,
+                                size: 60,
+                                color: pageData.color,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          // Description
-          Text(
-            pageData.description,
-            style: TextStyle(
-              fontSize: 16,
-              color: Color(0xFF1B5E20).withOpacity(0.7),
-              height: 1.5,
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      pageData.title,
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: pageData.color,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      pageData.description,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[600],
+                        height: 1.5,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
             ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    } else {
+      // Original layout for other pages
+      return Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Icon
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                color: pageData.color.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                pageData.icon,
+                size: 60,
+                color: pageData.color,
+              ),
+            ),
+            const SizedBox(height: 40),
+            // Title
+            Text(
+              pageData.title,
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF1B5E20),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            // Description
+            Text(
+              pageData.description,
+              style: TextStyle(
+                fontSize: 16,
+                color: Color(0xFF1B5E20).withOpacity(0.7),
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
   }
 }
 
@@ -249,11 +344,157 @@ class OnboardingPageData {
   final String title;
   final String description;
   final Color color;
+  final bool isWelcomePage;
 
   OnboardingPageData({
     required this.icon,
     required this.title,
     required this.description,
     required this.color,
+    required this.isWelcomePage,
   });
+}
+
+// Custom painter for water-like shape
+class WaterShapePainter extends CustomPainter {
+  final Color color;
+
+  WaterShapePainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color.withOpacity(0.2)
+      ..style = PaintingStyle.fill;
+
+    final path = Path();
+    final width = size.width;
+    final height = size.height;
+
+    // Create organic water-like shape
+    path.moveTo(width * 0.2, height * 0.3);
+    
+    // Top left curve
+    path.quadraticBezierTo(
+      width * 0.1, height * 0.1,  // control point
+      width * 0.35, height * 0.15  // end point
+    );
+    
+    // Top right curve
+    path.quadraticBezierTo(
+      width * 0.7, height * 0.05,  // control point
+      width * 0.85, height * 0.25  // end point
+    );
+    
+    // Right side curve
+    path.quadraticBezierTo(
+      width * 0.95, height * 0.5,  // control point
+      width * 0.8, height * 0.75   // end point
+    );
+    
+    // Bottom right curve
+    path.quadraticBezierTo(
+      width * 0.7, height * 0.95,  // control point
+      width * 0.4, height * 0.9    // end point
+    );
+    
+    // Bottom left curve
+    path.quadraticBezierTo(
+      width * 0.15, height * 0.85, // control point
+      width * 0.05, height * 0.6   // end point
+    );
+    
+    // Left side curve back to start
+    path.quadraticBezierTo(
+      width * 0.05, height * 0.45, // control point
+      width * 0.2, height * 0.3    // back to start
+    );
+    
+    path.close();
+    
+    // Draw the main shape
+    canvas.drawPath(path, paint);
+    
+    // Add subtle gradient effect
+    final gradientPaint = Paint()
+      ..shader = RadialGradient(
+        center: Alignment.center,
+        radius: 0.8,
+        colors: [
+          color.withOpacity(0.3),
+          color.withOpacity(0.1),
+          color.withOpacity(0.05),
+        ],
+      ).createShader(Rect.fromLTWH(0, 0, width, height));
+    
+    canvas.drawPath(path, gradientPaint);
+    
+    // Add ripple effect circles
+    final ripplePaint = Paint()
+      ..color = color.withOpacity(0.1)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+    
+    final center = Offset(width / 2, height / 2);
+    canvas.drawCircle(center, width * 0.3, ripplePaint);
+    canvas.drawCircle(center, width * 0.2, ripplePaint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
+}
+
+// Custom clipper for water-like shape
+class WaterShapeClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    final width = size.width;
+    final height = size.height;
+
+    // Create the same organic water-like shape as the painter
+    path.moveTo(width * 0.2, height * 0.3);
+    
+    // Top left curve
+    path.quadraticBezierTo(
+      width * 0.1, height * 0.1,  // control point
+      width * 0.35, height * 0.15  // end point
+    );
+    
+    // Top right curve
+    path.quadraticBezierTo(
+      width * 0.7, height * 0.05,  // control point
+      width * 0.85, height * 0.25  // end point
+    );
+    
+    // Right side curve
+    path.quadraticBezierTo(
+      width * 0.95, height * 0.5,  // control point
+      width * 0.8, height * 0.75   // end point
+    );
+    
+    // Bottom right curve
+    path.quadraticBezierTo(
+      width * 0.7, height * 0.95,  // control point
+      width * 0.4, height * 0.9    // end point
+    );
+    
+    // Bottom left curve
+    path.quadraticBezierTo(
+      width * 0.15, height * 0.85, // control point
+      width * 0.05, height * 0.6   // end point
+    );
+    
+    // Left side curve back to start
+    path.quadraticBezierTo(
+      width * 0.05, height * 0.45, // control point
+      width * 0.2, height * 0.3    // back to start
+    );
+    
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
