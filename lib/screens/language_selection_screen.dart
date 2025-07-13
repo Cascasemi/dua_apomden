@@ -316,20 +316,6 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 16),
-                      // Debug TTS button
-                      ElevatedButton.icon(
-                        onPressed: () async {
-                          print("Manual audio test button pressed");
-                          await _playInstructionsAudio();
-                        },
-                        icon: Icon(Icons.volume_up),
-                        label: Text('Play Instructions'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF8BC34A),
-                          foregroundColor: Colors.white,
-                        ),
-                      ),
                     ],
                   ),
                 ),
