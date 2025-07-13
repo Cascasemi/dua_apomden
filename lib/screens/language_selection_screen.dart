@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/services.dart';
 
 class LanguageSelectionScreen extends StatefulWidget {
   const LanguageSelectionScreen({super.key});
@@ -10,12 +11,13 @@ class LanguageSelectionScreen extends StatefulWidget {
 
 class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
     with TickerProviderStateMixin {
-  FlutterTts flutterTts = FlutterTts();
+  late AudioPlayer audioPlayer;
   int? selectedLanguage;
   late AnimationController _fadeController;
   late AnimationController _scaleController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
+  bool isAudioAvailable = false;
 
   final List<Map<String, dynamic>> languages = [
     {
@@ -53,9 +55,9 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
   @override
   void initState() {
     super.initState();
-    _initializeTts();
+    _initializeAudio();
     _setupAnimations();
-    _speakInstructions();
+    _playInstructionsAudio();
   }
 
   void _setupAnimations() {
@@ -90,17 +92,47 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
     });
   }
 
-  Future<void> _initializeTts() async {
-    await flutterTts.setLanguage("en-US");
-    await flutterTts.setSpeechRate(0.8);
-    await flutterTts.setVolume(1.0);
-    await flutterTts.setPitch(1.0);
+  Future<void> _initializeAudio() async {
+    try {
+      audioPlayer = AudioPlayer();
+      isAudioAvailable = true;
+      print("Audio player initialized successfully");
+    } catch (e) {
+      print("Audio initialization error: $e");
+      isAudioAvailable = false;
+      _showAudioUnavailableMessage();
+    }
   }
 
-  Future<void> _speakInstructions() async {
-    await Future.delayed(const Duration(milliseconds: 1000));
-    await flutterTts.speak(
-        "Press 1 for English, Press 2 for Twi, Press 3 for Ga, Press 4 for Ewe and 5 for Hausa");
+  void _showAudioUnavailableMessage() {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Audio instructions unavailable. Please use visual selection.'),
+          backgroundColor: Color(0xFF2E7D32),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
+  }
+
+  Future<void> _playInstructionsAudio() async {
+    if (!isAudioAvailable) {
+      print("Audio not available, showing visual message");
+      _showAudioUnavailableMessage();
+      return;
+    }
+    
+    try {
+      print("Playing audio instructions...");
+      await Future.delayed(const Duration(seconds: 1)); // 1 second delay as requested
+      
+      await audioPlayer.play(AssetSource('audio/language_instructions.mp3'));
+      print("Audio played successfully");
+    } catch (e) {
+      print("Audio play error: $e");
+      _showAudioUnavailableMessage();
+    }
   }
 
   void _selectLanguage(int languageNumber) {
@@ -108,9 +140,9 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
       selectedLanguage = languageNumber;
     });
 
-    // Speak the selected language
+    // Play selection confirmation sound (optional)
     String languageName = languages[languageNumber - 1]['name'];
-    flutterTts.speak("You selected $languageName");
+    print('Selected language: $languageName');
 
     // Navigate to next screen after a short delay
     Future.delayed(const Duration(seconds: 2), () {
@@ -170,9 +202,60 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
     );
   }
 
+  Widget _buildRepeatCircle() {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () {
+            // Repeat the audio instructions
+            _playInstructionsAudio();
+          },
+          child: Container(
+            width: 70,
+            height: 70,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Color(0xFF8BC34A), // Light Green
+                width: 3,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0xFF8BC34A).withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Center(
+              child: Text(
+                '0',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF8BC34A),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Repeat',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF1B5E20),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   void dispose() {
-    flutterTts.stop();
+    audioPlayer.dispose();
     _fadeController.dispose();
     _scaleController.dispose();
     super.dispose();
@@ -214,7 +297,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                           color: Color(0xFF2E7D32),
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 12),
                       Text(
                         'Choose Your Language',
                         style: TextStyle(
@@ -233,6 +316,20 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                         ),
                         textAlign: TextAlign.center,
                       ),
+                      const SizedBox(height: 16),
+                      // Debug TTS button
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          print("Manual audio test button pressed");
+                          await _playInstructionsAudio();
+                        },
+                        icon: Icon(Icons.volume_up),
+                        label: Text('Play Instructions'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF8BC34A),
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -242,6 +339,9 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
+                      // Repeat instruction circle (0)
+                      _buildRepeatCircle(),
+                      const SizedBox(height: 20),
                       // First row with 3 circles
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
