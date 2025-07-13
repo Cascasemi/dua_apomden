@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Import this for SystemChrome
+import 'language_selection_screen.dart';
 
 class GetStartedScreen extends StatefulWidget {
   const GetStartedScreen({super.key});
@@ -124,9 +125,13 @@ class _GetStartedScreenState extends State<GetStartedScreen> with SingleTickerPr
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Handle Get Started - Navigate to next screen
-                          // TODO: Navigate to main app or next onboarding screen
-                          print('Get Started pressed');
+                          // Navigate to Language Selection Screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LanguageSelectionScreen(),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF2E7D32), // Forest Green from UI guidelines
