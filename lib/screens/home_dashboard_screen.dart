@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'scan_screen.dart';
+import 'history_screen.dart';
+import 'learn_screen.dart';
+import 'settings_screen.dart';
 
 class HomeDashboardScreen extends StatefulWidget {
   const HomeDashboardScreen({super.key});
@@ -15,6 +19,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
   int healthyPercentage = 85;
   int diseasesFound = 2;
   int pendingTreatments = 1;
+  int currentTabIndex = 0; // Track current tab
 
   @override
   void initState() {
@@ -222,8 +227,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
           SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              // TODO: Navigate to camera/scan screen
-              print('Navigate to scan screen');
+              _navigateToScreen(1); // Navigate to scan screen
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
@@ -372,7 +376,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
             ),
             TextButton(
               onPressed: () {
-                // TODO: Navigate to full activity history
+                _navigateToScreen(2); // Navigate to history screen
               },
               child: Text(
                 'View All',
