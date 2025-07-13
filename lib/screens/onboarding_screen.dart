@@ -139,6 +139,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
+  Future<void> _playTwiAudio() async {
+    if (selectedLanguage == 'Twi') {
+      try {
+        await audioPlayer.play(AssetSource('audio/outputtwi.mp3'));
+      } catch (e) {
+        print('Error playing Twi audio: $e');
+      }
+    }
+  }
+
   Future<void> _stopAllAudio() async {
     if (isSpeaking) {
       await flutterTts.stop();
@@ -168,6 +178,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         // Play Ewe audio for first page after 1 second delay
         Future.delayed(Duration(seconds: 1), () {
           _playEweAudio();
+        });
+      }
+      // TODO: Add audio for other pages when files are uploaded
+    } else if (selectedLanguage == 'Twi') {
+      if (page == 0) {
+        // Play Twi audio for first page after 1 second delay
+        Future.delayed(Duration(seconds: 1), () {
+          _playTwiAudio();
         });
       }
       // TODO: Add audio for other pages when files are uploaded
