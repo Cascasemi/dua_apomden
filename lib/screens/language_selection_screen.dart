@@ -119,6 +119,57 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
     });
   }
 
+  Widget _buildLanguageCircle(int number, String name, Color color) {
+    final isSelected = selectedLanguage == number;
+    
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () => _selectLanguage(number),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: isSelected ? color : Colors.white,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: color,
+                width: isSelected ? 4 : 3,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withOpacity(0.4),
+                  blurRadius: isSelected ? 15 : 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Center(
+              child: Text(
+                '$number',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: isSelected ? Colors.white : color,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Text(
+          name,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF1B5E20),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   void dispose() {
     flutterTts.stop();
@@ -188,101 +239,27 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                 const SizedBox(height: 50),
                 // Language Options
                 Expanded(
-                  child: GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1.0,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20,
-                    ),
-                    itemCount: languages.length,
-                    itemBuilder: (context, index) {
-                      final language = languages[index];
-                      final isSelected = selectedLanguage == language['number'];
-                      
-                      return AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                        child: GestureDetector(
-                          onTap: () => _selectLanguage(language['number']),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: isSelected 
-                                  ? language['color'] 
-                                  : Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: language['color'],
-                                width: isSelected ? 3 : 2,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: language['color'].withOpacity(0.3),
-                                  blurRadius: isSelected ? 15 : 8,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                // Number Circle
-                                Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    color: isSelected 
-                                        ? Colors.white 
-                                        : language['color'],
-                                    shape: BoxShape.circle,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.1),
-                                        blurRadius: 5,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      '${language['number']}',
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                        color: isSelected 
-                                            ? language['color'] 
-                                            : Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 12),
-                                // Language Icon
-                                Icon(
-                                  language['icon'],
-                                  size: 30,
-                                  color: isSelected 
-                                      ? Colors.white 
-                                      : language['color'],
-                                ),
-                                const SizedBox(height: 8),
-                                // Language Name
-                                Text(
-                                  language['name'],
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: isSelected 
-                                        ? Colors.white 
-                                        : language['color'],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // First row with 3 circles
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildLanguageCircle(1, 'English', languages[0]['color']),
+                          _buildLanguageCircle(2, 'Twi', languages[1]['color']),
+                          _buildLanguageCircle(3, 'Ga', languages[2]['color']),
+                        ],
+                      ),
+                      // Second row with 2 circles
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildLanguageCircle(4, 'Ewe', languages[3]['color']),
+                          _buildLanguageCircle(5, 'Hausa', languages[4]['color']),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
                 // Continue Button (only show when language is selected)
