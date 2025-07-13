@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'onboarding_screen.dart';
 
 class LanguageSelectionScreen extends StatefulWidget {
   const LanguageSelectionScreen({super.key});
@@ -135,19 +137,32 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
     }
   }
 
-  void _selectLanguage(int languageNumber) {
+  void _selectLanguage(int languageNumber) async {
     setState(() {
       selectedLanguage = languageNumber;
     });
 
-    // Play selection confirmation sound (optional)
+    // Get the language name
     String languageName = languages[languageNumber - 1]['name'];
     print('Selected language: $languageName');
 
-    // Navigate to next screen after a short delay
-    Future.delayed(const Duration(seconds: 2), () {
-      // TODO: Navigate to main app or next screen
-      print('Selected language: $languageName');
+    // Save language to shared preferences
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('languageselection', languageName);
+      print('Language saved to shared preferences: $languageName');
+    } catch (e) {
+      print('Error saving language to shared preferences: $e');
+    }
+
+    // Navigate to onboarding screen after a short delay
+    Future.delayed(const Duration(seconds: 1), () {
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+        );
+      }
     });
   }
 
