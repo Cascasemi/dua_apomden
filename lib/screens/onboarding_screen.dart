@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -12,6 +14,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   String selectedLanguage = '';
   PageController _pageController = PageController();
   int currentPage = 0;
+  late FlutterTts flutterTts;
+  late AudioPlayer audioPlayer;
+  bool isSpeaking = false;
 
   final List<OnboardingPageData> onboardingPages = [
     OnboardingPageData(
@@ -41,18 +46,53 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void initState() {
     super.initState();
     _loadSelectedLanguage();
+    _initializeTtsAndAudio();
   }
 
   @override
   void dispose() {
     _pageController.dispose();
+    flutterTts.stop();
+    audioPlayer.dispose();
     super.dispose();
+  }
+
+  Future<void> _initializeTtsAndAudio() async {
+    flutterTts = FlutterTts();
+    audioPlayer = AudioPlayer();
+    
+    // Configure TTS
+    await flutterTts.setLanguage("en-US");
+    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.setVolume(0.8);
+    await flutterTts.setPitch(1.0);
+    
+    // Set TTS completion callback
+    flutterTts.setCompletionHandler(() {
+      setState(() {
+        isSpeaking = false;
+      });
+    });
+    
+    flutterTts.setErrorHandler((msg) {
+      setState(() {
+        isSpeaking = false;
+      });
+      print('TTS Error: $msg');
+    });
   }
 
   Future<void> _loadSelectedLanguage() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       selectedLanguage = prefs.getString('languageselection') ?? 'English';
+    });
+    
+    // Start TTS/audio for the first page after language is loaded
+    Future.delayed(Duration(milliseconds: 500), () {
+      if (mounted) {
+        _handlePageChange(0);
+      }
     });
   }
 
@@ -78,6 +118,60 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void _finishOnboarding() {
     // TODO: Navigate to main app
     print('Onboarding finished - Navigate to main app');
+  }
+
+  Future<void> _speakDescription(String description) async {
+    if (selectedLanguage == 'English' && !isSpeaking) {
+      setState(() {
+        isSpeaking = true;
+      });
+      await flutterTts.speak(description);
+    }
+  }
+
+  Future<void> _playEweAudio() async {
+    if (selectedLanguage == 'Ewe') {
+      try {
+        await audioPlayer.play(AssetSource('audio/eweexplain.mp3'));
+      } catch (e) {
+        print('Error playing Ewe audio: $e');
+      }
+    }
+  }
+
+  Future<void> _stopAllAudio() async {
+    if (isSpeaking) {
+      await flutterTts.stop();
+      setState(() {
+        isSpeaking = false;
+      });
+    }
+    await audioPlayer.stop();
+  }
+
+  void _handlePageChange(int page) async {
+    // Stop any ongoing audio/TTS when changing pages
+    await _stopAllAudio();
+    
+    setState(() {
+      currentPage = page;
+    });
+    
+    // Handle audio/TTS for the new page
+    final pageData = onboardingPages[page];
+    
+    if (selectedLanguage == 'English') {
+      // Use TTS for English
+      _speakDescription(pageData.description);
+    } else if (selectedLanguage == 'Ewe') {
+      if (page == 0) {
+        // Play Ewe audio for first page after 1 second delay
+        Future.delayed(Duration(seconds: 1), () {
+          _playEweAudio();
+        });
+      }
+      // TODO: Add audio for other pages when files are uploaded
+    }
   }
 
   @override
@@ -138,9 +232,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             child: PageView.builder(
               controller: _pageController,
               onPageChanged: (int page) {
-                setState(() {
-                  currentPage = page;
-                });
+                _handlePageChange(page);
               },
               itemCount: onboardingPages.length,
               itemBuilder: (context, index) {
@@ -277,8 +369,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       pageData.description,
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.grey[600],
+                        color: isSpeaking && selectedLanguage == 'English' 
+                            ? pageData.color.withOpacity(0.8)
+                            : Colors.grey[600],
                         height: 1.5,
+                        fontWeight: isSpeaking && selectedLanguage == 'English' 
+                            ? FontWeight.w500 
+                            : FontWeight.normal,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -327,8 +424,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               pageData.description,
               style: TextStyle(
                 fontSize: 16,
-                color: Color(0xFF1B5E20).withOpacity(0.7),
+                color: isSpeaking && selectedLanguage == 'English' 
+                    ? Color(0xFF1B5E20) 
+                    : Color(0xFF1B5E20).withOpacity(0.7),
                 height: 1.5,
+                fontWeight: isSpeaking && selectedLanguage == 'English' 
+                    ? FontWeight.w500 
+                    : FontWeight.normal,
               ),
               textAlign: TextAlign.center,
             ),

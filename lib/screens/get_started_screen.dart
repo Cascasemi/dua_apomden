@@ -75,7 +75,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> with SingleTickerPr
         children: [
           // Background Image
           Image.asset(
-            'assets/images/backlogo.jpg', // Update to your background image path
+            'assets/images/backlogo2dua.png', // Update to your background image path
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
