@@ -44,16 +44,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await prefs.setBool('notifications', notificationsEnabled);
     await prefs.setBool('sound', soundEnabled);
     await prefs.setBool('autosave', autoSaveResults);
+    await prefs.setString('languageselection', selectedLanguage);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF1F8E9),
+      backgroundColor: const Color(0xFFF1F8E9),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
+        title: const Text(
           'Settings',
           style: TextStyle(
             color: Color(0xFF2E7D32),
@@ -61,7 +62,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios,
             color: Color(0xFF2E7D32),
           ),
@@ -71,31 +72,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Profile Section
-              _buildProfileSection(),
-              SizedBox(height: 24),
-              
-              // App Settings
-              _buildAppSettings(),
-              SizedBox(height: 24),
-              
-              // Preferences
-              _buildPreferences(),
-              SizedBox(height: 24),
-              
-              // About & Support
-              _buildAboutSupport(),
-              SizedBox(height: 24),
-              
-              // Danger Zone
-              _buildDangerZone(),
-            ],
-          ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
+                ),
+                child: IntrinsicHeight(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Profile Section
+                      _buildProfileSection(),
+                      const SizedBox(height: 24),
+                      // App Settings
+                      _buildAppSettings(),
+                      const SizedBox(height: 24),
+                      // Preferences
+                      _buildPreferences(),
+                      const SizedBox(height: 24),
+                      // About & Support
+                      _buildAboutSupport(),
+                      const SizedBox(height: 24),
+                      // Danger Zone
+                      _buildDangerZone(),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
       bottomNavigationBar: _buildBottomNavigation(),
@@ -104,7 +112,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildProfileSection() {
     return Container(
-      padding: EdgeInsets.all(20),
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -112,7 +121,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           BoxShadow(
             color: Colors.grey.withOpacity(0.1),
             blurRadius: 8,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -120,47 +129,47 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           CircleAvatar(
             radius: 40,
-            backgroundColor: Color(0xFF2E7D32).withOpacity(0.1),
-            child: Icon(
+            backgroundColor: const Color(0xFF2E7D32).withOpacity(0.1),
+            child: const Icon(
               Icons.person,
               size: 40,
               color: Color(0xFF2E7D32),
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
             userName,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Color(0xFF1B5E20),
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: Color(0xFF8BC34A).withOpacity(0.2),
+              color: const Color(0xFF8BC34A).withOpacity(0.2),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
               selectedLanguage,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF2E7D32),
               ),
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           ElevatedButton.icon(
             onPressed: _editProfile,
-            icon: Icon(Icons.edit, size: 18),
-            label: Text('Edit Profile'),
+            icon: const Icon(Icons.edit, size: 18),
+            label: const Text('Edit Profile'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFF2E7D32),
+              backgroundColor: const Color(0xFF2E7D32),
               foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(25),
               ),
@@ -299,14 +308,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           'Clear All Data',
           'Remove all scan history',
           Icons.delete,
-          color: Color(0xFFFF5722),
+          color: const Color(0xFFFF5722),
           onTap: _clearAllData,
         ),
         _buildSettingItem(
           'Reset App',
           'Reset to factory settings',
           Icons.refresh,
-          color: Color(0xFFFF5722),
+          color: const Color(0xFFFF5722),
           onTap: _resetApp,
         ),
       ],
@@ -319,13 +328,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
       children: [
         Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: Color(0xFF1B5E20),
           ),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -334,7 +343,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               BoxShadow(
                 color: Colors.grey.withOpacity(0.1),
                 blurRadius: 8,
-                offset: Offset(0, 4),
+                offset: const Offset(0, 4),
               ),
             ],
           ),
@@ -364,14 +373,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }) {
     return ListTile(
       leading: Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: (color ?? Color(0xFF2E7D32)).withOpacity(0.1),
+          color: (color ?? const Color(0xFF2E7D32)).withOpacity(0.1),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Icon(
           icon,
-          color: color ?? Color(0xFF2E7D32),
+          color: color ?? const Color(0xFF2E7D32),
           size: 20,
         ),
       ),
@@ -379,7 +388,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         title,
         style: TextStyle(
           fontWeight: FontWeight.w600,
-          color: color ?? Color(0xFF1B5E20),
+          color: color ?? const Color(0xFF1B5E20),
         ),
       ),
       subtitle: Text(
@@ -407,20 +416,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
   ) {
     return ListTile(
       leading: Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: Color(0xFF2E7D32).withOpacity(0.1),
+          color: const Color(0xFF2E7D32).withOpacity(0.1),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Icon(
           icon,
-          color: Color(0xFF2E7D32),
+          color: const Color(0xFF2E7D32),
           size: 20,
         ),
       ),
       title: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.w600,
           color: Color(0xFF1B5E20),
         ),
@@ -435,38 +444,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
       trailing: Switch(
         value: value,
         onChanged: onChanged,
-        activeColor: Color(0xFF2E7D32),
+        activeColor: const Color(0xFF2E7D32),
       ),
     );
   }
 
   void _editProfile() {
+    TextEditingController nameController = TextEditingController(text: userName);
+    
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Edit Profile'),
+        title: const Text('Edit Profile'),
         content: TextField(
-          controller: TextEditingController(text: userName),
-          decoration: InputDecoration(
+          controller: nameController,
+          decoration: const InputDecoration(
             labelText: 'Name',
             border: OutlineInputBorder(),
           ),
-          onChanged: (value) {
-            userName = value;
-          },
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
-              setState(() {});
+              setState(() {
+                userName = nameController.text;
+              });
               _saveSettings();
               Navigator.pop(context);
             },
-            child: Text('Save'),
+            child: const Text('Save'),
           ),
         ],
       ),
@@ -478,18 +488,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(24),
             topRight: Radius.circular(24),
           ),
         ),
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            const Text(
               'Select Language',
               style: TextStyle(
                 fontSize: 20,
@@ -497,34 +507,43 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 color: Color(0xFF1B5E20),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ListTile(
-              title: Text('English'),
-              trailing: selectedLanguage == 'English' ? Icon(Icons.check, color: Color(0xFF2E7D32)) : null,
+              title: const Text('English'),
+              trailing: selectedLanguage == 'English' 
+                  ? const Icon(Icons.check, color: Color(0xFF2E7D32)) 
+                  : null,
               onTap: () {
                 setState(() {
                   selectedLanguage = 'English';
                 });
+                _saveSettings();
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              title: Text('Ewe'),
-              trailing: selectedLanguage == 'Ewe' ? Icon(Icons.check, color: Color(0xFF2E7D32)) : null,
+              title: const Text('Ewe'),
+              trailing: selectedLanguage == 'Ewe' 
+                  ? const Icon(Icons.check, color: Color(0xFF2E7D32)) 
+                  : null,
               onTap: () {
                 setState(() {
                   selectedLanguage = 'Ewe';
                 });
+                _saveSettings();
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              title: Text('Twi'),
-              trailing: selectedLanguage == 'Twi' ? Icon(Icons.check, color: Color(0xFF2E7D32)) : null,
+              title: const Text('Twi'),
+              trailing: selectedLanguage == 'Twi' 
+                  ? const Icon(Icons.check, color: Color(0xFF2E7D32)) 
+                  : null,
               onTap: () {
                 setState(() {
                   selectedLanguage = 'Twi';
                 });
+                _saveSettings();
                 Navigator.pop(context);
               },
             ),
@@ -538,23 +557,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Clear All Data'),
-        content: Text('This will permanently delete all your scan history. This action cannot be undone.'),
+        title: const Text('Clear All Data'),
+        content: const Text('This will permanently delete all your scan history. This action cannot be undone.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
               // TODO: Clear all data
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('All data cleared')),
+                const SnackBar(content: Text('All data cleared')),
               );
             },
-            style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFFF5722)),
-            child: Text('Clear All'),
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFFF5722)),
+            child: const Text('Clear All'),
           ),
         ],
       ),
@@ -565,23 +584,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Reset App'),
-        content: Text('This will reset the app to its initial state. All settings and data will be lost.'),
+        title: const Text('Reset App'),
+        content: const Text('This will reset the app to its initial state. All settings and data will be lost.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
               // TODO: Reset app
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('App will be reset')),
+                const SnackBar(content: Text('App will be reset')),
               );
             },
-            style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFFF5722)),
-            child: Text('Reset'),
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFFF5722)),
+            child: const Text('Reset'),
           ),
         ],
       ),
@@ -596,20 +615,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
           BoxShadow(
             color: Colors.grey.withOpacity(0.2),
             blurRadius: 10,
-            offset: Offset(0, -4),
+            offset: const Offset(0, -4),
           ),
         ],
       ),
       child: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
-        selectedItemColor: Color(0xFF2E7D32),
+        selectedItemColor: const Color(0xFF2E7D32),
         unselectedItemColor: Colors.grey[500],
         selectedFontSize: 12,
         unselectedFontSize: 12,
         elevation: 0,
         currentIndex: widget.selectedTabIndex,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
@@ -646,25 +665,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case 0:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomeDashboardScreen()),
+          MaterialPageRoute(builder: (context) => const HomeDashboardScreen()),
         );
         break;
       case 1:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => ScanScreen(selectedTabIndex: 1)),
+          MaterialPageRoute(builder: (context) => const ScanScreen(selectedTabIndex: 1)),
         );
         break;
       case 2:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HistoryScreen(selectedTabIndex: 2)),
+          MaterialPageRoute(builder: (context) => const HistoryScreen(selectedTabIndex: 2)),
         );
         break;
       case 3:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => LearnScreen(selectedTabIndex: 3)),
+          MaterialPageRoute(builder: (context) => const LearnScreen(selectedTabIndex: 3)),
         );
         break;
       case 4:
