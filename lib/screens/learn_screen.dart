@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'home_dashboard_screen.dart';
-import 'scan_screen.dart';
-import 'history_screen.dart';
-import 'settings_screen.dart';
 
 class LearnScreen extends StatefulWidget {
   final int selectedTabIndex;
@@ -99,7 +95,6 @@ class _LearnScreenState extends State<LearnScreen> {
               color: Color(0xFF2E7D32),
             ),
             onPressed: () {
-              // TODO: Show bookmarked articles
               print('Show bookmarks');
             },
           ),
@@ -158,7 +153,6 @@ class _LearnScreenState extends State<LearnScreen> {
           hintStyle: TextStyle(color: Colors.grey[500]),
         ),
         onSubmitted: (value) {
-          // TODO: Implement search
           print('Search: $value');
         },
       ),
@@ -177,15 +171,15 @@ class _LearnScreenState extends State<LearnScreen> {
             color: Color(0xFF1B5E20),
           ),
         ),
-        SizedBox(height: 16),
+        SizedBox(height: 12),
         GridView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 1.1,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 1.2,
           ),
           itemCount: learningContent.length,
           itemBuilder: (context, index) {
@@ -198,66 +192,71 @@ class _LearnScreenState extends State<LearnScreen> {
   }
 
   Widget _buildCategoryCard(Map<String, dynamic> category) {
-    return GestureDetector(
-      onTap: () {
-        // TODO: Navigate to category articles
-        print('Navigate to ${category['title']}');
-      },
-      child: Container(
-        padding: EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: category['color'].withOpacity(0.1),
-              blurRadius: 8,
-              offset: Offset(0, 4),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: category['color'].withOpacity(0.1),
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () {
+            print('Navigate to ${category['title']}');
+          },
+          child: Padding(
+            padding: EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: category['color'].withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    category['icon'],
+                    color: category['color'],
+                    size: 20,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  category['title'],
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1B5E20),
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  category['subtitle'],
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                Spacer(),
+                Text(
+                  '${category['articles']} articles',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: category['color'],
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: category['color'].withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                category['icon'],
-                color: category['color'],
-                size: 24,
-              ),
-            ),
-            SizedBox(height: 12),
-            Text(
-              category['title'],
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF1B5E20),
-              ),
-            ),
-            SizedBox(height: 4),
-            Text(
-              category['subtitle'],
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              '${category['articles']} articles',
-              style: TextStyle(
-                fontSize: 11,
-                color: category['color'],
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -275,7 +274,7 @@ class _LearnScreenState extends State<LearnScreen> {
             color: Color(0xFF1B5E20),
           ),
         ),
-        SizedBox(height: 16),
+        SizedBox(height: 12),
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -292,7 +291,7 @@ class _LearnScreenState extends State<LearnScreen> {
           child: Column(
             children: [
               Container(
-                height: 180,
+                height: 160,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(16),
@@ -321,7 +320,7 @@ class _LearnScreenState extends State<LearnScreen> {
                   child: Align(
                     alignment: Alignment.bottomLeft,
                     child: Padding(
-                      padding: EdgeInsets.all(16),
+                      padding: EdgeInsets.all(12),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -346,7 +345,7 @@ class _LearnScreenState extends State<LearnScreen> {
                             'Understanding Crop Disease Patterns in Ghana',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -357,14 +356,14 @@ class _LearnScreenState extends State<LearnScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.all(12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Learn about the most common crop diseases affecting farmers in Ghana and how to identify them early for better crop management.',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 13,
                         color: Colors.grey[600],
                         height: 1.4,
                       ),
@@ -382,7 +381,6 @@ class _LearnScreenState extends State<LearnScreen> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            // TODO: Open featured article
                             print('Open featured article');
                           },
                           style: ElevatedButton.styleFrom(
@@ -427,7 +425,6 @@ class _LearnScreenState extends State<LearnScreen> {
             ),
             TextButton(
               onPressed: () {
-                // TODO: View all articles
                 print('View all articles');
               },
               child: Text(
@@ -440,7 +437,7 @@ class _LearnScreenState extends State<LearnScreen> {
             ),
           ],
         ),
-        SizedBox(height: 16),
+        SizedBox(height: 12),
         ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
@@ -458,22 +455,22 @@ class _LearnScreenState extends State<LearnScreen> {
       margin: EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.1),
-            blurRadius: 8,
-            offset: Offset(0, 4),
+            blurRadius: 6,
+            offset: Offset(0, 2),
           ),
         ],
       ),
       child: ListTile(
-        contentPadding: EdgeInsets.all(16),
+        contentPadding: EdgeInsets.all(12),
         leading: Container(
-          width: 60,
-          height: 60,
+          width: 50,
+          height: 50,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(10),
             image: DecorationImage(
               image: AssetImage(article['image']),
               fit: BoxFit.cover,
@@ -485,6 +482,7 @@ class _LearnScreenState extends State<LearnScreen> {
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Color(0xFF1B5E20),
+            fontSize: 14,
           ),
         ),
         subtitle: Column(
@@ -495,7 +493,7 @@ class _LearnScreenState extends State<LearnScreen> {
               article['category'],
               style: TextStyle(
                 color: Color(0xFF2E7D32),
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -503,7 +501,7 @@ class _LearnScreenState extends State<LearnScreen> {
             Text(
               article['readTime'],
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 11,
                 color: Colors.grey[500],
               ),
             ),
@@ -513,6 +511,7 @@ class _LearnScreenState extends State<LearnScreen> {
           icon: Icon(
             article['isBookmarked'] ? Icons.bookmark : Icons.bookmark_border,
             color: article['isBookmarked'] ? Color(0xFF2E7D32) : Colors.grey[400],
+            size: 20,
           ),
           onPressed: () {
             setState(() {
@@ -521,7 +520,6 @@ class _LearnScreenState extends State<LearnScreen> {
           },
         ),
         onTap: () {
-          // TODO: Open article
           print('Open article: ${article['title']}');
         },
       ),
@@ -572,44 +570,9 @@ class _LearnScreenState extends State<LearnScreen> {
           ),
         ],
         onTap: (index) {
-          _handleNavigation(index);
+          Navigator.pop(context, index);
         },
       ),
     );
-  }
-
-  void _handleNavigation(int index) {
-    if (index == widget.selectedTabIndex) return; // Already on this screen
-
-    // Direct navigation to the selected screen
-    switch (index) {
-      case 0:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeDashboardScreen()),
-        );
-        break;
-      case 1:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ScanScreen(selectedTabIndex: 1)),
-        );
-        break;
-      case 2:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HistoryScreen(selectedTabIndex: 2)),
-        );
-        break;
-      case 3:
-        // Already on LearnScreen, do nothing
-        break;
-      case 4:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => SettingsScreen(selectedTabIndex: 4)),
-        );
-        break;
-    }
   }
 }
