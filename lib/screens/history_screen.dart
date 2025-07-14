@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'home_dashboard_screen.dart';
+import 'scan_screen.dart';
+import 'learn_screen.dart';
+import 'settings_screen.dart';
 
 class HistoryScreen extends StatefulWidget {
   final int selectedTabIndex;
@@ -520,7 +524,36 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   void _handleNavigation(int index) {
     if (index == widget.selectedTabIndex) return; // Already on this screen
-    
-    Navigator.pop(context, index); // Return to home with selected index
+
+    // Direct navigation to the selected screen
+    switch (index) {
+      case 0:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomeDashboardScreen()),
+        );
+        break;
+      case 1:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ScanScreen(selectedTabIndex: 1)),
+        );
+        break;
+      case 2:
+        // Already on HistoryScreen, do nothing
+        break;
+      case 3:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LearnScreen(selectedTabIndex: 3)),
+        );
+        break;
+      case 4:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => SettingsScreen(selectedTabIndex: 4)),
+        );
+        break;
+    }
   }
 }

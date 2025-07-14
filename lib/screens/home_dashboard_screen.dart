@@ -23,7 +23,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
 
   // Navigation to individual screens
   void _navigateToScreen(int tabIndex) async {
-    Widget targetScreen;
+    Widget? targetScreen;
     
     switch (tabIndex) {
       case 1:
@@ -39,18 +39,28 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
         targetScreen = SettingsScreen(selectedTabIndex: tabIndex);
         break;
       default:
-        return; // Stay on home screen
+        // Invalid index, stay on home
+        setState(() {
+          currentTabIndex = 0;
+        });
+        return;
     }
 
+    // Navigate to the screen
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => targetScreen),
+      MaterialPageRoute(builder: (context) => targetScreen!),
     );
 
     // Handle return value to update selected tab
     if (result != null && result is int) {
       setState(() {
         currentTabIndex = result;
+      });
+    } else {
+      // If user backed out without selecting a tab, reset to home
+      setState(() {
+        currentTabIndex = 0;
       });
     }
   } // Track current tab
@@ -733,14 +743,89 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
           ),
         ],
         onTap: (index) {
-          if (index == 0) {
-            // Stay on home screen
-            setState(() {
-              currentTabIndex = 0;
-            });
-          } else {
-            // Navigate to individual screen
-            _navigateToScreen(index);
+          switch (index) {
+            case 0:
+              // Already on home, just update tab
+              setState(() {
+                currentTabIndex = 0;
+              });
+              break;
+            case 1:
+              // Navigate to Scan
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ScanScreen(selectedTabIndex: 1),
+                ),
+              ).then((result) {
+                if (result != null && result is int) {
+                  setState(() {
+                    currentTabIndex = result;
+                  });
+                } else {
+                  setState(() {
+                    currentTabIndex = 0;
+                  });
+                }
+              });
+              break;
+            case 2:
+              // Navigate to History
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HistoryScreen(selectedTabIndex: 2),
+                ),
+              ).then((result) {
+                if (result != null && result is int) {
+                  setState(() {
+                    currentTabIndex = result;
+                  });
+                } else {
+                  setState(() {
+                    currentTabIndex = 0;
+                  });
+                }
+              });
+              break;
+            case 3:
+              // Navigate to Learn
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LearnScreen(selectedTabIndex: 3),
+                ),
+              ).then((result) {
+                if (result != null && result is int) {
+                  setState(() {
+                    currentTabIndex = result;
+                  });
+                } else {
+                  setState(() {
+                    currentTabIndex = 0;
+                  });
+                }
+              });
+              break;
+            case 4:
+              // Navigate to Settings
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsScreen(selectedTabIndex: 4),
+                ),
+              ).then((result) {
+                if (result != null && result is int) {
+                  setState(() {
+                    currentTabIndex = result;
+                  });
+                } else {
+                  setState(() {
+                    currentTabIndex = 0;
+                  });
+                }
+              });
+              break;
           }
         },
       ),
